@@ -1,0 +1,6 @@
+Patient Name: Demo Patient
+Hemoglobin: 9.5 g/dL
+White Blood Cell Count: 12500 cells/µL
+TSH: 2.5 mIU/L
+Vitamin D: 12 ng/mL
+Vitamin B12: 100 pg/mL

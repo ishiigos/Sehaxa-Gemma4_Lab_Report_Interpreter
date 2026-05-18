@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sehaxa — AI Lab Report Interpreter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Gemma 4 Good Hackathon MVP</p>
+        <h1>Sehaxa</h1>
+        <p class="tagline">Upload a lab report photo or enter values manually. Sehaxa turns numbers into simple English + Hindi health insights.</p>
+      </div>
+      <div class="badge">Photo Upload · OCR · Gemma 4 · India-first</div>
+    </section>
+
+    <section class="card warning">
+      <strong>Safety note:</strong> Sehaxa explains lab values for health literacy only. It does not diagnose, prescribe, or replace a qualified doctor.
+    </section>
+
+    <section class="card upload-card">
+      <div class="section-title">
+        <div>
+          <h2>1. Upload a lab report image</h2>
+          <p>For demo speed, this OCR mode extracts common values like Hemoglobin, WBC, TSH, Vitamin D, B12, Glucose, HbA1c, ALT, Creatinine, and Platelets.</p>
+        </div>
+      </div>
+
+      <form method="post" enctype="multipart/form-data" class="upload-form">
+        <input type="hidden" name="action" value="extract_ocr">
+        <input type="hidden" name="language_mode" value="{{ language_mode }}">
+        <input type="file" name="report_image" accept="image/*">
+        <button type="submit" class="secondary">Extract values from image</button>
+      </form>
+
+      {% if ocr_error %}
+        <div class="error">{{ ocr_error }}</div>
+      {% endif %}
+
+      {% if ocr_text %}
+        <div class="ocr-grid">
+          <div>
+            <h3>Detected values</h3>
+            {% if extracted_values %}
+              <div class="chips">
+                {% for key, value in extracted_values.items() %}
+                  <div class="chip normal">
+                    <strong>{{ reference_ranges[key].label }}</strong>
+                    <span>{{ value }} {{ reference_ranges[key].unit }}</span>
+                    <em>OCR detected</em>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p>No supported values detected. Try a clearer image or enter values manually.</p>
+            {% endif %}
+          </div>
+
+          <div>
+            <h3>Raw OCR text</h3>
+            <pre class="ocr-text">{{ ocr_text }}</pre>
+          </div>
+        </div>
+
+        <form method="post">
+          <input type="hidden" name="action" value="decode_ocr">
+          <input type="hidden" name="language_mode" value="{{ language_mode }}">
+          <textarea name="ocr_text" class="hidden-textarea">{{ ocr_text }}</textarea>
+          <button type="submit">Decode OCR values with Sehaxa</button>
+        </form>
+      {% endif %}
+    </section>
+
+    <form method="post" class="card form-card">
+      <input type="hidden" name="action" value="decode_manual">
+      <div class="form-header">
+        <div>
+          <h2>2. Or enter / correct values manually</h2>
+          <p>Manual entry is kept as a safety fallback because OCR is not perfect.</p>
+        </div>
+        <select name="language_mode">
+          <option value="bilingual" {% if language_mode == "bilingual" %}selected{% endif %}>English + Hindi</option>
+          <option value="english" {% if language_mode == "english" %}selected{% endif %}>English only</option>
+          <option value="hindi" {% if language_mode == "hindi" %}selected{% endif %}>Hindi focus</option>
+        </select>
+      </div>
+
+      <div class="grid">
+        {% for key, item in reference_ranges.items() %}
+          <label>
+            <span>{{ item.label }}</span>
+            <small>Range: {{ item.low }}–{{ item.high }} {{ item.unit }}</small>
+            <input type="number" step="any" name="{{ key }}" value="{{ form_values.get(key, '') }}" placeholder="{{ item.unit }}">
+          </label>
+        {% endfor %}
+      </div>
+
+      <button type="submit">Decode with Sehaxa</button>
+    </form>
+
+    {% if report %}
+    <section class="card">
+      <h2>Structured values</h2>
+      <div class="chips">
+        {% for r in report %}
+          <div class="chip {{ r.status }}">
+            <strong>{{ r.name }}</strong>
+            <span>{{ r.value }} {{ r.unit }}</span>
+            <em>{{ r.status }}</em>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if result %}
+    <section class="card result">
+      <div class="result-top">
+        <h2>Sehaxa explanation</h2>
+        <span>Model: {{ provider }}</span>
+      </div>
+      <div class="markdown-output">
+        {{ result | safe }}
+      </div>
+    </section>
+    {% endif %}
+
+    <footer>
+      Built for the Gemma 4 Good Hackathon · © {{ year }} Sehaxa MVP
+    </footer>
+  </main>
+</body>
+</html>
