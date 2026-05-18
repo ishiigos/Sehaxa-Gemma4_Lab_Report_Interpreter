@@ -120,3 +120,21 @@ Sehaxa is not a diagnostic system. It does not prescribe treatment or replace a 
 Best fit:
 - Health & Sciences
 - Main Track
+
+## Screenshots
+
+![Sehaxa thumbnail](assets/images/Sehaxa.png)
+
+![Sehaxa HomePage](assets/images/Sehaxa_HomePage.png)
+
+![Sehaxa Report Upload](assets/images/Sehaxa_report_upload.png)
+
+![Sehaxa OCR Extracted Values](assets/images/OCR_extracted_values.png)
+
+![Sehaxa Fallback Model](assets/images/Sehaxa_fallback_model.png)
+
+![Sehaxa Output Values](assets/images/Output_values.png)
+
+![Sehaxa Output Details with Gemma 4](assets/images/Output_details_1.png)
+
+![Sehaxa Output Details part 2](assets/images/Output_details_2.png)
