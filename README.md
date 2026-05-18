@@ -119,5 +119,4 @@ Sehaxa is not a diagnostic system. It does not prescribe treatment or replace a 
 
 Best fit:
 - Health & Sciences
-- Digital Equity & Inclusivity
-- Safety & Trust
+- Main Track
